@@ -1,4 +1,4 @@
-module github.com/irai/arp
+module github.com/joel-hk/arp
 
 go 1.14
 
