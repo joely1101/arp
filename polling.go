@@ -120,18 +120,26 @@ func (c *Handler) purgeLoop(ctx context.Context, offline time.Duration, purge ti
 	}
 }
 
+func inc(ip net.IP) {
+	for j := len(ip)-1; j>=0; j-- {
+		ip[j]++
+		if ip[j] > 0 {
+			break
+		}
+	}
+}
 // ScanNetwork sends 256 arp requests to identify IPs on the lan
 func (c *Handler) ScanNetwork(ctx context.Context, lan net.IPNet) error {
 
 	// Copy underneath array so we can modify value.
-	ip := lan.IP.To4()
-
+	ip2 := lan.IP.To4()
+	mask:= lan.Mask
 	if Debug {
 		log.Printf("ARP Discovering IP - sending 254 ARP requests - lan %v", lan)
 	}
-	for host := 1; host < 255; host++ {
-		ip[3] = byte(host)
-
+        
+	//for host := 1; host < 255; host++ {
+	for ip := ip2.Mask(mask); lan.Contains(ip); inc(ip) {
 		// Don't scan router and host
 		if bytes.Equal(ip, c.config.RouterIP) || bytes.Equal(ip, c.config.HostIP) {
 			continue
