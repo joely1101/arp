@@ -14,7 +14,7 @@ import (
 
 	"log"
 
-	"github.com/irai/arp"
+	"github.com/joel-hk/arp"
 )
 
 var (
